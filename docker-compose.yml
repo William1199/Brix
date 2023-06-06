@@ -1,0 +1,49 @@
+version: '3.4'
+
+networks:
+    backendnetwork:
+        driver: bridge
+
+services:
+    #ngnix:
+    #    image: nginx:stable-alpine
+    #    volumes:
+    #        - ./nginx/nginx.conf:/etc/nginx.conf
+    #    ports:
+    #        - 3000:80
+    #    expose:
+    #     - 3000
+         
+    #    restart: unless-stopped
+    #    depends_on:
+    #        - buildingconstructapi
+    #    networks:
+    #        - backendnetwork
+
+      #volumes:
+      #  - ./nginx/nginx.conf:/etc/nginx.conf
+
+      #image: nginx:alpine
+      #ports:
+      #- "443:443"
+      ##- "8080:80"
+      ##networks:
+      ##- backendnetwork
+      #depends_on:
+      #  - buildingconstructapi
+
+
+    buildingconstructapi:
+        image: ${DOCKER_REGISTRY-}buildingconstructapi
+        ports:
+          - "5000:5000"
+        build:
+          context: .
+          dockerfile: BuildingConstructApi/Dockerfile
+        environment:
+        - ASPNETCORE_ENVIRONMENT=Development
+        - Authorization__AllowAnonymous=true
+        volumes:
+         - ./appsettings.Development.json:/app/appsettings.Development.json
+        networks:
+        - backendnetwork
